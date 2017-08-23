@@ -1,4 +1,4 @@
-import requests, sys, pickle, datetime, argparse
+import requests, sys, pickle, datetime, argparse, getpass
 
 # Get user arguments, in particular user/password 
 parser = argparse.ArgumentParser("A simple script to gather and store cloning/release data off of GitHub")
@@ -6,9 +6,9 @@ parser.add_argument('-gu', '--ghusr', type=str,
                      help="GitHub user account for the repo that's in question")
 parser.add_argument('-gr', '--ghrep', type=str,
                      help="GitHub user repo for the repo that's in question")
-parser.add_argument('-pu', '--puser', type=str,
+parser.add_argument('-pu', '--puser', type=str, default=None,
                      help="GitHub account name with push access to the repo, for cloning data")
-parser.add_argument('-pp', '--ppswd', type=str,
+parser.add_argument('-pp', '--ppswd', type=str, default=None,
                      help="GitHub account password with push access to the repo, for cloning data")
 parser.add_argument('-o', '--output', type=str, default="ghstats.pickle",
                      help="Output file name, if the script is used before, use the same file name \
@@ -35,9 +35,17 @@ except IOError:
 base_url = "https://api.github.com/repos"
 repo_url = base_url + "/" + gh_usr + "/" + gh_rep + "/"
 
-# Always update cloning stats
-clone_stats_req = requests.get(repo_url + "traffic/clones", auth=(user, pswd))
-clonej = clone_stats_req.json()
+# IF push access is avilable, update cloning stats
+if user and pswd:
+    clone_stats_req = requests.get(repo_url + "traffic/clones", auth=(user, pswd))
+    clonej = clone_stats_req.json()
+if user and not pswd:
+    print("Please enter GitHub account password for %s"%user)
+    pswd = getpass.getpass()
+    clone_stats_req = requests.get(repo_url + "traffic/clones", auth=(user, pswd))
+    clonej = clone_stats_req.json()
+else:
+    clonej = None
 
 # let's just pull latest release at the moment
 release_stats_req = requests.get(repo_url + "releases/latest")
