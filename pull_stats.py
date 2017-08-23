@@ -9,7 +9,9 @@ parser.add_argument('-gr', '--ghrep', type=str,
 parser.add_argument('-pu', '--puser', type=str, default=None,
                      help="GitHub account name with push access to the repo, for cloning data")
 parser.add_argument('-pp', '--ppswd', type=str, default=None,
-                     help="GitHub account password with push access to the repo, for cloning data")
+                     help="GitHub account password with push access to the repo, for cloning data \
+                           you can omit this and the program will interactively ask for your password \
+                           if you have specified a GitHub push access user with -pu or --puser")
 parser.add_argument('-o', '--output', type=str, default="ghstats.pickle",
                      help="Output file name, if the script is used before, use the same file name \
                            if you want to avoid creating a new file, it'll be updated. Everything \
