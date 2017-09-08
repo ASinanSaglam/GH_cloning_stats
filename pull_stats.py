@@ -77,6 +77,9 @@ if newFile:
     # If new, just make a new file
     releasej["data_updated"] = date_str
     stats_dict = {"release_data": {'latest': releasej}, "cloning_data": {date_str: clonej}}
+    outfile.close()
+    outfile = open(args.output, 'w')
+    pickle.dump(stats_dict, outfile)
 else:
     print("Updating file")
     # If loading, we update the cloning data directly 
