@@ -1,6 +1,19 @@
-import pickle 
+import pickle, argparse
 
-f = open('ghstats.pickle', 'r')
+parser = argparse.ArgumentParser("A simple script to print stored cloning/release info")
+parser.add_argument('-i', '--input', type=str, default='ghstats.pickle',
+                     help="Input python pickle file")
+parser.add_argument('-pc', '--print_clone', action='store_false', default=True,
+                     help="Stops printing of cloning data")
+parser.add_argument('-pr', '--print_release', action='store_false', default=True,
+                     help="Stops printing of release data")
+args = parser.parse_args()
+
+input_file = args.input
+print_clone = args.print_clone
+print_release = args.print_release
+
+f = open(args.input, 'r')
 st = pickle.load(f)
 
 cln_st = st['cloning_data']
@@ -67,5 +80,7 @@ def print_clone_info(cln_st):
     print("Done printing cloning info")
     print("#################################")
 
-print_release_info(rls_st)
-print_clone_info(cln_st)
+if print_release:
+    print_release_info(rls_st)
+if print_clone:
+    print_clone_info(cln_st)
